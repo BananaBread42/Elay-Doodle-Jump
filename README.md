@@ -1,1 +1,1 @@
-..
+Doodle Jump is an endless vertical-platformer where players guide a creature called "The Doodler" upward by jumping on platform. Player can either use the left and right arrow keys or a and d to control the Doodler. In this version there are no monsters, broken platforms, springs or jetpacks.
