@@ -1,11 +1,43 @@
-body{
+body {
+    margin: 0;
     font-family: 'Courier New', Courier, monospace;
     text-align: center;
+    background: linear-gradient(to bottom, #87CEEB, #ffffff);
 }
-body{
-    text-align: center;
+
+/* Title */
+h1 {
+    margin-top: 20px;
+    font-size: 42px;
+    letter-spacing: 2px;
 }
-#board{
-    /* background-color: green; */
+
+/* Game container */
+#game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Canvas */
+#board {
+    width: 400px;
+    height: 600px;
+    margin-top: 20px;
+
     background-image: url("./doodlejumpbg.png");
+    background-size: cover;
+    background-position: center;
+
+    border: 3px solid black;
+    border-radius: 12px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* Controls text */
+.controls {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
 }
