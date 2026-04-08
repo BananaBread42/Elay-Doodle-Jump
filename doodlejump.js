@@ -36,14 +36,13 @@ let platformWidth = 60;
 let platformHeight = 18;
 let platformImg;
 
-//enemies
-let enemyArray = [];
-let enemyImg;
+//coins
+let coinArray = [];
+let coinImg;
 
-//powerups
-let springImg;
-let jetpackImg;
-let jetpackArray = [];
+//sounds
+let jumpSound = new Audio("./jump.mp3");
+let coinSound = new Audio("./coin.mp3");
 
 //score
 let score = 0;
@@ -66,14 +65,8 @@ window.onload = function() {
     platformImg = new Image();
     platformImg.src = "./platform.png";
 
-    enemyImg = new Image();
-    enemyImg.src = "./enemy.png";
-
-    springImg = new Image();
-    springImg.src = "./spring.png";
-
-    jetpackImg = new Image();
-    jetpackImg.src = "./jetpack.png";
+    coinImg = new Image();
+    coinImg.src = "./coin.png";
 
     velocityY = initialVelocitY;
     placePlatforms();
@@ -125,63 +118,41 @@ function update() {
             p.y -= initialVelocitY;
         }
 
-        //breakable
+        //breaking platform
         if (p.breakable && detectCollision(doodler, p) && velocityY >= 0){
             platformArray.splice(i,1);
             i--;
             continue;
         }
 
-        //spring
         if (detectCollision(doodler, p) && velocityY >= 0){
-            if (p.hasSpring){
-                velocityY = initialVelocitY * 1.8;
-            } else {
-                velocityY = initialVelocitY;
-            }
+            velocityY = initialVelocitY;
+            jumpSound.play();
         }
 
         context.drawImage(p.img, p.x, p.y, p.width, p.height);
-
-        if (p.hasSpring){
-            context.drawImage(springImg, p.x + 15, p.y - 15, 30, 30);
-        }
     }
 
-    //enemies
-    for (let i = 0; i < enemyArray.length; i++){
-        let e = enemyArray[i];
+    //coins
+    for (let i = 0; i < coinArray.length; i++){
+        let c = coinArray[i];
 
         if (velocityY < 0 && doodler.y < boardHeight*3/4){
-            e.y -= initialVelocitY;
+            c.y -= initialVelocitY;
         }
 
-        if (detectCollision(doodler, e)){
-            gameOver = true;
-        }
-
-        context.drawImage(enemyImg, e.x, e.y, e.width, e.height);
-    }
-
-    //jetpack
-    for (let i = 0; i < jetpackArray.length; i++){
-        let j = jetpackArray[i];
-
-        if (velocityY < 0 && doodler.y < boardHeight*3/4){
-            j.y -= initialVelocitY;
-        }
-
-        if (detectCollision(doodler, j)){
-            velocityY = -15; // BOOST 🚀
-            jetpackArray.splice(i,1);
+        if (detectCollision(doodler, c)){
+            coinSound.play();
+            score += 20;
+            coinArray.splice(i,1);
             i--;
             continue;
         }
 
-        context.drawImage(jetpackImg, j.x, j.y, j.width, j.height);
+        context.drawImage(coinImg, c.x, c.y, 20, 20);
     }
 
-    //remove old platforms
+    //remove platforms
     while (platformArray.length > 0 && platformArray[0].y >= boardHeight){
         platformArray.shift();
         newPlatform();
@@ -242,8 +213,7 @@ function resetGame(){
     gameOver = false;
 
     placePlatforms();
-    enemyArray = [];
-    jetpackArray = [];
+    coinArray = [];
 }
 
 function placePlatforms(){
@@ -263,29 +233,18 @@ function newPlatform(i=0){
         y : i === 0 ? boardHeight - 50 : -platformHeight,
         width : platformWidth,
         height : platformHeight,
-        breakable : Math.random() < 0.2,
-        hasSpring : Math.random() < 0.2
+        breakable : Math.random() < 0.2
     };
 
     platformArray.push(platform);
 
-    //enemy
-    if (Math.random() < 0.2){
-        enemyArray.push({
-            x: randomX,
-            y: platform.y - 40,
-            width: 40,
-            height: 40
-        });
-    }
-
-    //jetpack
-    if (Math.random() < 0.1){
-        jetpackArray.push({
-            x: randomX + 10,
-            y: platform.y - 80,
-            width: 30,
-            height: 30
+    //add coin sometimes
+    if (Math.random() < 0.3){
+        coinArray.push({
+            x: randomX + 20,
+            y: platform.y - 25,
+            width: 20,
+            height: 20
         });
     }
 }
